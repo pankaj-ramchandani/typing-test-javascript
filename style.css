@@ -1,0 +1,68 @@
+:root{
+    --bg-color: #333;
+    --text-primary: #fff;
+    --text-secendory: #666;
+    --primaryColor: #fd4;
+}
+
+body{
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-size: 1.4rem;
+}
+
+main{
+    width: 80vw;
+    margin: 50px auto;
+}
+
+h1{
+    color: var(--primaryColor);
+}
+
+#header
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 20px 6px 30px;
+}
+
+#buttons{
+    text-align: right;
+}
+
+#info{
+    color: var(--primaryColor);
+}
+
+button{
+    background: rgba(255,255,255,.2);
+    border: 0;
+    color: rgba(255,255,255,.5);
+    padding: 5px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+div#game{
+    line-height: 35px;
+    height: 105px;
+    overflow: hidden;
+    position: relative;
+}
+
+#words{
+    filter: blur(5px);
+}
+
+div#focus-error{
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    padding-top: 35px;
+}
+
+div.word{
+    display: inline-block;
+    margin: 0 5px;
+}
