@@ -4,6 +4,9 @@ const words =
   );
 
 const wordsCount = words.length;
+const gameTime = 30 * 1000;
+window.timer = null;
+window.gameStart = null;
 
 function addClass(el, name) {
   el.className += " " + name;
@@ -43,6 +46,22 @@ document.getElementById("game").addEventListener("keyup", (e) => {
   const isBackspace = key === "Backspace";
   const isFirstLetter = currentLetter === currentWord.firstChild;
   console.log({ key, expected });
+
+  if (!window.timer && isLetter) {
+    window.timer = setInterval(() => {
+      if (!window.gameStart) {
+        window.gameStart = new Date().getTime();
+      }
+      const currentTime = new Date().getTime();
+      const msPassed = currentTime - window.gameStart;
+      const sPassed = Math.round(msPassed / 1000);
+      const sLeft = gameTime / 1000 - sPassed;
+      if (sLeft > 0) {
+      } else {
+        document.getElementById("info").innerHTML = sLeft + "";
+      }
+    }, 1000);
+  }
 
   if (isLetter) {
     if (currentLetter) {
@@ -97,6 +116,13 @@ document.getElementById("game").addEventListener("keyup", (e) => {
       removeClass(currentWord.lastChild, "correct");
       removeClass(currentWord.lastChild, "incorrect");
     }
+  }
+
+  // move lines / words
+  if (currentWord.getBoundingClientRect().top > 250) {
+    const words = document.getElementById("words");
+    const margin = parseInt(words.style.marginTop || "0px");
+    words.style.marginTop = margin - 35 + "px";
   }
 
   // move cursor
