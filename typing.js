@@ -4,7 +4,7 @@ const words =
   );
 
 const wordsCount = words.length;
-const gameTime = 30 * 1000;
+const gameTime = 60 * 1000;
 window.timer = null;
 window.gameStart = null;
 
@@ -34,6 +34,33 @@ function newGame() {
   }
   addClass(document.querySelector(".word"), "current");
   addClass(document.querySelector(".letter"), "current");
+  document.getElementById("info").innerHTML = gameTime / 1000;
+}
+
+function getWpm() {
+  const words = [...document.querySelectorAll(".word")];
+  const lastTypedWord = document.querySelector(".word.current");
+  const lastTypedWordIndex = words.indexOf(lastTypedWord);
+  const typedWords = words.slice(0, lastTypedWordIndex);
+  const correctWords = typedWords.filter((word) => {
+    const letters = [...word.children];
+    const incorrectLetters = letters.filter((letter) =>
+      letter.className.includes("incorrect")
+    );
+    const correctLetters = letters.filter((letter) =>
+      letter.className.includes("correct")
+    );
+    return (
+      incorrectLetters.length === 0 && correctLetters.length === letters.length
+    );
+  });
+  return (correctWords.length / gameTime) * 60000;
+}
+
+function gameOver() {
+  clearInterval(window.timer);
+  addClass(document.getElementById("game"), "over");
+  document.getElementById("info").innerHTML = `WPM: ${getWpm()}`;
 }
 
 document.getElementById("game").addEventListener("keyup", (e) => {
@@ -47,6 +74,9 @@ document.getElementById("game").addEventListener("keyup", (e) => {
   const isFirstLetter = currentLetter === currentWord.firstChild;
   console.log({ key, expected });
 
+  if (document.querySelector("#game.over")) {
+    return;
+  }
   if (!window.timer && isLetter) {
     window.timer = setInterval(() => {
       if (!window.gameStart) {
@@ -56,7 +86,8 @@ document.getElementById("game").addEventListener("keyup", (e) => {
       const msPassed = currentTime - window.gameStart;
       const sPassed = Math.round(msPassed / 1000);
       const sLeft = gameTime / 1000 - sPassed;
-      if (sLeft > 0) {
+      if (sLeft < 0) {
+        gameOver();
       } else {
         document.getElementById("info").innerHTML = sLeft + "";
       }
@@ -135,6 +166,11 @@ document.getElementById("game").addEventListener("keyup", (e) => {
     (nextLetter || nextWord).getBoundingClientRect()[
       nextLetter ? "left" : "right"
     ] + "px";
+});
+
+document.getElementById("newGameBtn").addEventListener("click", () => {
+  gameOver();
+  newGame();
 });
 
 newGame();
